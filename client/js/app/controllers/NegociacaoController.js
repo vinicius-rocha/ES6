@@ -13,11 +13,17 @@ class NegociacaoController{
         event.preventDefault();
 
         let negociacao = new Negociacao(
-            new Date(this._inputData.value.replace(/-/g, ',')),
+            new Date(...this.convertData(this._inputData.value)),
             this._inputQuantidade.value,
             this._inputValor.value
         );
         
         console.log(negociacao);
+    }
+    
+    convertData(data){
+        console.log(data);
+        return data.split('-')
+            .map((item, indice) => item - indice % 2)
     }
 }
