@@ -13,7 +13,7 @@ class NegociacaoController{
         event.preventDefault();
 
         let negociacao = new Negociacao(
-            this._inputData.value,
+            new Date(this._inputData.value.replace(/-/g, ',')),
             this._inputQuantidade.value,
             this._inputValor.value
         );
