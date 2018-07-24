@@ -36,35 +36,26 @@ class NegociacaoController{
     importaNegociacoes() {
         let service = new NegociacaoService();
 
-        service.obterNegociacoesDaSemana((erro, negociacoes) => {
-            if(erro){
-                this._mensagem.texto = erro;
-                return;
-            }
-
+        service.obterNegociacoesDaSemana()
+        .then(negociacoes => {
             negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem = 'Negociações importadas com sucesso.'
-            
-            service.obterNegociacoesDaSemanaAnterior((erro, negociacoes) => {
-                if(erro){
-                    this._mensagem.texto = erro;
-                    return;
-                }
-    
-                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-                this._mensagem = 'Negociações importadas com sucesso.'
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
 
-                service.obterNegociacoesDaSemanaRestrasada((erro, negociacoes) => {
-                    if(erro){
-                        this._mensagem.texto = erro;
-                        return;
-                    }
-        
-                    negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-                    this._mensagem = 'Negociações importadas com sucesso.'
-                });
-            });
-        });
+        service.obterNegociacoesDaSemanaAnterior()
+        .then(negociacoes => {
+            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
+
+        service.obterNegociacoesDaSemanaRetrasada()
+        .then(negociacoes => {
+            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+        })
+        .catch(erro => this._mensagem.texto = erro);
     }
 
     _limpaFormulario(){
