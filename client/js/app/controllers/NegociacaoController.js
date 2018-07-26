@@ -11,6 +11,15 @@ class NegociacaoController{
 
         this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia', 'ordena', 'inverteOrdem');
         this._mensagem = new Bind(new Mensagem(), new MensagemView($('#mensagemView')), 'texto');
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes => 
+                negociacoes.forEach(negociacao => 
+                    this._listaNegociacoes.adiciona(negociacao)));
+            
     }
 
     adiciona(event){
@@ -65,7 +74,17 @@ class NegociacaoController{
         this._inputData.value = '';
         this._inputQuantidade.value = 1;
         this._inputValor.value = 0.0
-
+        ConnectionFactory
+        .getConnection()
+        .then(connection => {
+            new NegociacaoDao(connection)
+                .listaTodos()
+                .then(negociacoes => {
+                    negociacoes.forEach(negociacao => {
+                        this._listaNegociacoes.adiciona(negociacao);
+                    });
+                });
+        });
         this._inputData.focus();
     }
 
