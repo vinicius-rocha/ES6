@@ -12,7 +12,7 @@ class NegociacaoDao {
                 .objectStore(this._store)
                 .add(negociacao)
 
-            request.onsucess = e => {
+            request.onsuccess = e => {
                 resolve();
             };
             request.onerror = e => {
