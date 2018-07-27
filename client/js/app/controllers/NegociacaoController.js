@@ -21,7 +21,7 @@ class NegociacaoController{
                     this._listaNegociacoes.adiciona(negociacao)))
             .catch(erro => {
                 console.log(erro);
-                this._mensagem.texto = error;
+                this._mensagem.texto = erro;
             });
     }
 
@@ -65,35 +65,19 @@ class NegociacaoController{
 
     importaNegociacoes() {
         let service = new NegociacaoService();
-
-        Promise.all([
-            service.obterNegociacoesDaSemana(),
-            service.obterNegociacoesDaSemanaAnterior(),
-            service.obterNegociacoesDaSemanaRetrasada()]
-        ).then(negociacoes => {
-            negociacoes
-                .reduce((arrayAchatado, array) => arrayAchatado.concat(array), [])
-                .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';
-        })
-        .catch(erro => this._mensagem.texto = erro);
+        service
+            .obterNegociacoes()
+            .then(negociacoes => negociacoes.forEach(negociacao => {
+                this._listaNegociacoes.adiciona(negociacao);
+                this._mensagem.texto = 'Negociações importadas com sucesso';
+            }))
+            .catch(erro => this._mensagem.texto = erro);  
     }
 
     _limpaFormulario(){
         this._inputData.value = '';
         this._inputQuantidade.value = 1;
         this._inputValor.value = 0.0
-        ConnectionFactory
-        .getConnection()
-        .then(connection => {
-            new NegociacaoDao(connection)
-                .listaTodos()
-                .then(negociacoes => {
-                    negociacoes.forEach(negociacao => {
-                        this._listaNegociacoes.adiciona(negociacao);
-                    });
-                });
-        });
         this._inputData.focus();
     }
 
