@@ -7,11 +7,15 @@ class NegociacaoController{
         this._inputData = $('#data');
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
-        this._ordemAtual = '';
-
+        
         this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($('#negociacoesView')), 'adiciona', 'esvazia', 'ordena', 'inverteOrdem');
         this._mensagem = new Bind(new Mensagem(), new MensagemView($('#mensagemView')), 'texto');
 
+        this._ordemAtual = '';
+        this._init();
+}
+    
+    _init() {
         ConnectionFactory
             .getConnection()
             .then(connection => new NegociacaoDao(connection))
@@ -23,8 +27,11 @@ class NegociacaoController{
                 console.log(erro);
                 this._mensagem.texto = erro;
             });
+        
+        setInterval(() => {
+            this.importaNegociacoes();
+        }, 3000);
     }
-
     adiciona(event){
         event.preventDefault();
         
@@ -76,7 +83,6 @@ class NegociacaoController{
             )
             .then(negociacoes => negociacoes.forEach(negociacao => {
                 this._listaNegociacoes.adiciona(negociacao);
-                this._mensagem.texto = 'Negociações importadas com sucesso';
             }))
             .catch(erro => this._mensagem.texto = erro);  
     }
